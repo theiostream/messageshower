@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>icon</key>
+			<string>mwahaha.png</string>
+			<key>label</key>
+			<string>MessageShower</string>
+		</dict>
+	
+	<key>items</key>
+	<array>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>AppStart Reminder</string>
+			<key>footerText</key>
+			<string>This setting displays a MessageShower alert when any app is launched.</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>AppStart</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>MessageShower</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>AppStartTitle</string>
+			<key>label</key>
+			<string>Title</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>Get to Settings and change this placeholder message!</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>AppStartMessage</string>
+			<key>label</key>
+			<string>Message</string>
+		</dict>
+		
+		
+		
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>AppKill Reminder</string>
+			<key>footerText</key>
+			<string>This setting displays a MessageShower alert when you attempt to launch an app, and the app isn't launched.</string>
+		</dict>
+		
+		
+		
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>FlashStart</string>
+			<key>footerText</key>
+			<string>This setting triggers MessageShower when flashing (taking screenshots).</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashStart</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>MessageShower</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashStartTitle</string>
+			<key>label</key>
+			<string>Title</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>Get to Settings and change this placeholder message!</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashStartMessage</string>
+			<key>label</key>
+			<string>Message</string>
+		</dict>
+		
+		
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>NoFlash</string>
+			<key>footerText</key>
+			<string>This setting triggers MessageShower when trying to flash, but disables the flashing feature. SHALL /NOT/ BE USED WITH FlashStart OPTION.</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashKill</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>MessageShower</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashKillTitle</string>
+			<key>label</key>
+			<string>Title</string>
+		</dict>
+		
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>Get to Settings and change this placeholder message!</string>
+			<key>defaults</key>
+			<string>am.theiostre.messageshowersettings</string>
+			<key>key</key>
+			<string>FlashKillMessage</string>
+			<key>label</key>
+			<string>Message</string>
+		</dict>
+		
+		
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Activator</string>
+			<key>footerText</key>
+			<string>This setting allows the user to choose one Activator method to trigger MessageShower.</string>
+		</dict>
+		
+		<dict>
+      <key>cell</key>
+      <string>PSLinkCell</string>
+      <key>label</key>
+      <string>Activation Methods</string>
+      <key>isController</key>
+      <true/>
+      <key>bundle</key>
+      <string>LibActivator</string>
+      <key>activatorListener</key>
+      <string>am.theiostre.messageshower</string>
+    </dict>
+	
+	<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>label</key>
+			<string>Locktopus-like passcodes coming soon! ... MessageShower © 2011 Matoe Productions LLC</string>
+		</dict>
+		
+		
+	</array>
+	<key>title</key>
+	<string>MessageShower</string>
+</dict>
+</plist>
