@@ -34,12 +34,16 @@ NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:PLIST_PATH];
   [text show];
   %orig;
 }
-  if ([[dict objectForKey:@"FlashKill"] boolValue]) {
+  else if ([[dict objectForKey:@"FlashKill"] boolValue]) {
   UIAlertView* text = [[UIAlertView alloc] init];
   text.title = [dict objectForKey:@"FlashKillTitle"];
   text.message = [dict objectForKey:@"FlashKillMessage"];
   [text addButtonWithTitle:@"I get it."];
   [text show];
+}
+
+else {
+%orig;
 }
 
 }
