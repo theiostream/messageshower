@@ -11,7 +11,11 @@
 % Imports/Macros
 %%*/
 
-#import <libactivator/libactivator.h>
+#include <objc/runtime.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
+#import <libactivator.h>
+
 #define MH_PLIST_PATH "/var/mobile/Library/Preferences/am.theiostre.messageshowersettings.plist"
 
 /*%%
@@ -60,10 +64,10 @@ static void MHUpdatePrefs() {
 	iconEnabled = MHGetBoolPref(plist, @"AppStart", YES);
 	actiEnabled = MHGetBoolPref(plist, @"ActivatorEnabled", YES);
 	
-	NSString *_title = [dict objectForKey:@"AppStartTitle"];
+	NSString *_title = [plist objectForKey:@"AppStartTitle"];
 	title = _title ? _title : @"MessageShower";
 	
-	NSString *_message = [dict objectForKey:@"AppStartMessage"];
+	NSString *_message = [plist objectForKey:@"AppStartMessage"];
 	message = _message ? _message : @"Get to Settings and change this placeholder message!";
 }
 
@@ -76,12 +80,12 @@ static void MHReloadPrefs(CFNotificationCenterRef center, void *observer, CFStri
 %%*/
 
 static void MHAlert() {
-	SBUserNotificationAlert *alert = [[%c(SBUserNotificationAlert) alloc] init];
+	SBUserNotificationAlert *alert = [[objc_getClass("SBUserNotificationAlert") alloc] init];
 	[alert setAlertHeader:title];
 	[alert setAlertMessage:message];
 	[alert setDefaultButtonTitle:@"I get it."];
 	
-	[[%c(SBAlertItemsController) sharedInstance] activateAlertItem:alert];
+	[[objc_getClass("SBAlertItemsController") sharedInstance] activateAlertItem:alert];
 	[alert release];
 }
 
