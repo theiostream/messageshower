@@ -1,74 +1,123 @@
-#include <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-#import "libactivator/libactivator.h"
+/*%%%%%
+%% Tweak.xm
+%% MessageShower
+%%
+%% Created by theiostream on his early coding days.
+%% He is not proud of it.
+%% WTFPLv3-licensed.
+%%%%%*/
 
-#define PLIST_PATH @"/var/mobile/Library/Preferences/am.theiostre.messageshowersettings.plist"
+/*%%
+% Imports/Macros
+%%*/
 
-//AppKill
+#import <libactivator/libactivator.h>
+#define MH_PLIST_PATH "/var/mobile/Library/Preferences/am.theiostre.messageshowersettings.plist"
+
+/*%%
+% Interface declarations
+%%*/
+
+@interface SBAlertItem : NSObject
+@end
+
+@interface SBUserNotificationAlert : SBAlertItem
+- (void)setAlertHeader:(NSString *)header;
+- (void)setAlertMessage:(NSString *)msg;
+- (void)setDefaultButtonTitle:(NSString *)title;
+@end
+
+@interface SBAlertItemsController : NSObject
++ (id)sharedInstance;
+- (void)activateAlertItem:(SBAlertItem *)item;
+@end
+
+@interface MHActivator : NSObject <LAListener>
+@end
+
+/*%%
+% Globals
+%%*/
+
+static BOOL iconEnabled = NO;
+static BOOL actiEnabled = NO;
+static NSString *title = nil;
+static NSString *message = nil;
+
+/*%%
+% Preference Helpers
+%%*/
+
+static BOOL MHGetBoolPref(NSDictionary *dict, NSString *key, BOOL def) {
+	NSNumber *v = [dict objectForKey:key];
+	return v ? [v boolValue] : def;
+}
+
+static void MHUpdatePrefs() {
+	NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:@MH_PLIST_PATH];
+	if (!plist) return;
+
+	iconEnabled = MHGetBoolPref(plist, @"AppStart", YES);
+	actiEnabled = MHGetBoolPref(plist, @"ActivatorEnabled", YES);
+	
+	NSString *_title = [dict objectForKey:@"AppStartTitle"];
+	title = _title ? _title : @"MessageShower";
+	
+	NSString *_message = [dict objectForKey:@"AppStartMessage"];
+	message = _message ? _message : @"Get to Settings and change this placeholder message!";
+}
+
+static void MHReloadPrefs(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	MHUpdatePrefs();
+}
+
+/*%%
+% Functions
+%%*/
+
+static void MHAlert() {
+	SBUserNotificationAlert *alert = [[%c(SBUserNotificationAlert) alloc] init];
+	[alert setAlertHeader:title];
+	[alert setAlertMessage:message];
+	[alert setDefaultButtonTitle:@"I get it."];
+	
+	[[%c(SBAlertItemsController) sharedInstance] activateAlertItem:alert];
+	[alert release];
+}
+
+/*%%
+% Hooks
+%%*/
+
+@implementation MHActivator
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {	
+	if (actiEnabled)
+		MHAlert();
+	
+	[event setHandled:YES];
+}
+
++ (void)load {
+	[[LAActivator sharedInstance] registerListener:[self new] forName:@"am.theiostre.messageshower"];
+}
+@end
 
 %hook SBApplicationIcon
-
 - (void)launch {
-NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:PLIST_PATH];
-  if ([[dict objectForKey:@"AppStart"] boolValue]) {
-  UIAlertView* text = [[UIAlertView alloc] init];
-  text.title = [dict objectForKey:@"AppStartTitle"];
-  text.message = [dict objectForKey:@"AppStartMessage"];
-  [text addButtonWithTitle:@"I get it."];
-  [text show];
-  
-  }
-%orig;
-}
-
-%end
-
-%hook SBScreenFlash
-- (void)flash {
-  NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:PLIST_PATH];
-  if ([[dict objectForKey:@"FlashStart"] boolValue]) {
-  UIAlertView* text = [[UIAlertView alloc] init];
-  text.title = [dict objectForKey:@"FlashStartTitle"];
-  text.message = [dict objectForKey:@"FlashStartMessage"];
-  [text addButtonWithTitle:@"I get it."];
-  [text show];
-  %orig;
-}
-  else if ([[dict objectForKey:@"FlashKill"] boolValue]) {
-  UIAlertView* text = [[UIAlertView alloc] init];
-  text.title = [dict objectForKey:@"FlashKillTitle"];
-  text.message = [dict objectForKey:@"FlashKillMessage"];
-  [text addButtonWithTitle:@"I get it."];
-  [text show];
-}
-
-else {
-%orig;
-}
-
+	if (iconEnabled)
+		MHAlert();
+	
+	%orig;
 }
 %end
 
-//ActivatorSupport
-@interface Shower : NSObject<LAListener> {}
-@end
-
-@implementation Shower
-
-- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
-{
-  NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:PLIST_PATH];
-  UIAlertView* text = [[UIAlertView alloc] init];
-  text.title = [dict objectForKey:@"Title"];
-  text.message = [dict objectForKey:@"Message"];
-  [text addButtonWithTitle:@"I get it."];
-  [text show];
-  [event setHandled:YES];
+%ctor {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	%init;
+	
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &MHReloadPrefs, CFSTR("am.theiostre.messageshower.updated"), NULL, CFNotificationSuspensionBehaviorHold);
+	MHUpdatePrefs();
+	
+	[pool drain];
 }
-
-+ (void)load
-{
-  [[LAActivator sharedInstance] registerListener:[self new]forName:@"am.theiostre.messageshower"];
-}
-
-@end
