@@ -1,5 +1,0 @@
-{
-	title = "MessageShower";
-	description = "remind yourself!";
-	"compatible-modes" = ("springboard", "application", "lockscreen");
-}
