@@ -80,12 +80,12 @@ static void MHReloadPrefs(CFNotificationCenterRef center, void *observer, CFStri
 %%*/
 
 static void MHAlert() {
-	SBUserNotificationAlert *alert = [[objc_getClass("SBUserNotificationAlert") alloc] init];
+	SBUserNotificationAlert *alert = [[%c(SBUserNotificationAlert) alloc] init];
 	[alert setAlertHeader:title];
 	[alert setAlertMessage:message];
 	[alert setDefaultButtonTitle:@"I get it."];
 	
-	[[objc_getClass("SBAlertItemsController") sharedInstance] activateAlertItem:alert];
+	[(SBAlertItemsController *)[%c(SBAlertItemsController) sharedInstance] activateAlertItem:alert];
 	[alert release];
 }
 
