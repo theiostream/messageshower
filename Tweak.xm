@@ -58,6 +58,9 @@ static BOOL MHGetBoolPref(NSDictionary *dict, NSString *key, BOOL def) {
 }
 
 static void MHUpdatePrefs() {
+	if (title != nil) { [title release]; title = nil; }
+	if (message != nil) { [message release]; message = nil; }
+	
 	NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:@MH_PLIST_PATH];
 	if (!plist) return;
 
@@ -65,10 +68,10 @@ static void MHUpdatePrefs() {
 	actiEnabled = MHGetBoolPref(plist, @"ActivatorEnabled", YES);
 	
 	NSString *_title = [plist objectForKey:@"AppStartTitle"];
-	title = _title ? _title : @"MessageShower";
+	title = _title ? [_title retain] : @"MessageShower";
 	
 	NSString *_message = [plist objectForKey:@"AppStartMessage"];
-	message = _message ? _message : @"Get to Settings and change this placeholder message!";
+	message = _message ? [_message retain] : @"Get to Settings and change this placeholder message!";
 }
 
 static void MHReloadPrefs(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
