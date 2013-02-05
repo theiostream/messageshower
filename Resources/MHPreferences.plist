@@ -75,15 +75,6 @@
 				<key>cell</key>
 				<string>PSGroupCell</string>
 				<key>label</key>
-				<string>Message</string>
-				<key>footerText</key>
-				<string>Set the message to be showed once an icon is opened.</string>
-			</dict>
-			
-			<dict>
-				<key>cell</key>
-				<string>PSGroupCell</string>
-				<key>label</key>
 				<string>Activator</string>
 				<key>footerText</key>
 				<string>This setting allows the user to choose one Activator method to trigger MessageShower.</string>
