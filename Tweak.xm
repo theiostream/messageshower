@@ -14,7 +14,7 @@
 #include <objc/runtime.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
-#import <libactivator.h>
+#import <libactivator/libactivator.h>
 
 #define MH_PLIST_PATH "/var/mobile/Library/Preferences/am.theiostre.messageshowersettings.plist"
 
@@ -61,7 +61,11 @@ static void MHUpdatePrefs() {
 	if (title != nil) { [title release]; title = nil; }
 	if (message != nil) { [message release]; message = nil; }
 	
-	NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:@MH_PLIST_PATH];
+	CFStringRef appID = CFSTR("am.theiostre.messageshowersettings");
+	CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+	if (!keyList) return;
+	
+	NSDictionary *plist = (NSDictionary *)CFPreferencesCopyMultiple(keyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 	if (!plist) return;
 
 	iconEnabled = MHGetBoolPref(plist, @"AppStart", YES);
@@ -72,6 +76,9 @@ static void MHUpdatePrefs() {
 	
 	NSString *_message = [plist objectForKey:@"AppStartMessage"];
 	message = _message ? [_message retain] : @"Get to Settings and change this placeholder message!";
+
+	[plist release];
+	CFRelease(keyList);
 }
 
 static void MHReloadPrefs(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -110,6 +117,7 @@ static void MHAlert() {
 @end
 
 %hook SBApplicationIcon
+%group OS6x
 - (void)launch {
 	if (iconEnabled)
 		MHAlert();
@@ -118,10 +126,23 @@ static void MHAlert() {
 }
 %end
 
+%group OS7x
+- (void)launchFromLocation:(int)location {
+	if (iconEnabled)
+		MHAlert();
+	
+	%orig;
+}
+%end
+%end
+
 %ctor {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	%init;
+	if (kCFCoreFoundationVersionNumber >= 800)
+		%init(OS7x);
+	else
+		%init(OS6x);
 	
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &MHReloadPrefs, CFSTR("am.theiostre.messageshower.updated"), NULL, CFNotificationSuspensionBehaviorHold);
 	MHUpdatePrefs();
